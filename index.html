@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surprise for Sister! </title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #feada6 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            color: #4a4a4a;
+            padding: 15px;
+            position: relative;
+        }
+
+        /* Floating Flowers in Background */
+        .bg-flower {
+            position: fixed;
+            font-size: 24px;
+            opacity: 0.35;
+            animation: floatFlower 8s linear infinite;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes floatFlower {
+            0% { transform: translateY(100vh) rotate(0deg); }
+            100% { transform: translateY(-10vh) rotate(360deg); }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+            background: rgba(255, 255, 255, 0.94);
+            backdrop-filter: blur(12px);
+            border-radius: 28px;
+            padding: 25px 20px;
+            box-shadow: 0 20px 40px rgba(255, 105, 180, 0.25);
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+        }
+
+        .step {
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-family: 'Fredoka', cursive;
+            color: #d63384;
+            font-size: 26px;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            font-family: 'Fredoka', cursive;
+            color: #e83e8c;
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #ff6b81, #ff4757);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 6px 18px rgba(255, 71, 87, 0.35);
+            outline: none;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Balloon Pop Game */
+        .balloon-box {
+            width: 100%;
+            height: 230px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 18px;
+            position: relative;
+            overflow: hidden;
+            margin: 15px 0;
+            border: 2px dashed #ff85a2;
+        }
+
+        .floating-balloon {
+            position: absolute;
+            font-size: 36px;
+            cursor: pointer;
+            animation: floatUp 3.5s linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% { bottom: -50px; }
+            100% { bottom: 250px; }
+        }
+
+        /* Extended Match Cards (12 Cards - 3x4 Grid) */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin: 15px 0;
+        }
+
+        .card {
+            height: 60px;
+            background: linear-gradient(135deg, #ff9a9e, #fecfef);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            cursor: pointer;
+            color: transparent;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .card.flipped {
+            background: #ffffff;
+            color: #000;
+            border: 2px solid #ff85a2;
+            transform: rotateY(180deg);
+        }
+
+        /* Spin Wheel */
+        .wheel-wrapper {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 15px auto;
+        }
+
+        .wheel-pointer {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+            z-index: 20;
+        }
+
+        .wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 5px solid #ff4757;
+            position: relative;
+            overflow: hidden;
+            transition: transform 3s cubic-bezier(0.15, 0.99, 0.18, 1);
+            background: conic-gradient(
+                #ff9a9e 0deg 60deg,
+                #fecfef 60deg 120deg,
+                #ff758c 120deg 180deg,
+                #ffb6c1 180deg 240deg,
+                #ff6b81 240deg 300deg,
+                #f8a5c2 300deg 360deg
+            );
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .wheel-item {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform-origin: 0% 0%;
+            font-size: 20px;
+        }
+
+        /* Passcode Input */
+        .pin-input {
+            width: 85%;
+            padding: 12px;
+            font-size: 16px;
+            text-align: center;
+            border: 2px solid #ff758c;
+            border-radius: 14px;
+            margin-bottom: 15px;
+            outline: none;
+            color: #d63384;
+            font-weight: bold;
+        }
+
+        /* Envelope Letter Section */
+        .envelope-container {
+            margin: 20px auto;
+            cursor: pointer;
+        }
+
+        .envelope {
+            width: 120px;
+            height: 80px;
+            background: #ff758c;
+            border-radius: 10px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+            transition: transform 0.3s;
+        }
+
+        .letter-paper {
+            background: #fff;
+            padding: 18px;
+            border-radius: 16px;
+            border: 2px solid #ffb6c1;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            text-align: left;
+            font-size: 14px;
+            color: #444;
+            line-height: 1.6;
+            display: none;
+            margin-top: 15px;
+        }
+
+        /* Professional Bakery Style Cake */
+        .cake-container {
+            margin: 25px auto 15px;
+            width: 180px;
+            height: 140px;
+            position: relative;
+        }
+
+        .cake-base {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 55px;
+            background: linear-gradient(to right, #ff6b81, #ff85a2, #ff6b81);
+            border-radius: 14px 14px 6px 6px;
+            box-shadow: inset 0 -10px 0 rgba(0,0,0,0.1), 0 8px 15px rgba(0,0,0,0.1);
+        }
+
+        .cake-top-tier {
+            position: absolute;
+            bottom: 55px;
+            left: 15%;
+            width: 70%;
+            height: 45px;
+            background: linear-gradient(to right, #fecfef, #ffffff, #fecfef);
+            border-radius: 12px 12px 4px 4px;
+            box-shadow: inset 0 -6px 0 rgba(0,0,0,0.05);
+        }
+
+        .frosting-drip {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            height: 12px;
+            background: #ffffff;
+            border-radius: 10px 10px 8px 8px;
+            opacity: 0.9;
+        }
+
+        .candles {
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            z-index: 5;
+        }
+
+        .candle {
+            width: 8px;
+            height: 28px;
+            background: repeating-linear-gradient(45deg, #70a1ff, #70a1ff 5px, #ffffff 5px, #ffffff 10px);
+            border-radius: 3px;
+            position: relative;
+        }
+
+        .flame {
+            width: 10px;
+            height: 14px;
+            background: radial-gradient(circle, #fffa65, #ffa502);
+            border-radius: 50% 50% 20% 20%;
+            position: absolute;
+            top: -14px;
+            left: -1px;
+            animation: flicker 0.5s infinite alternate;
+            box-shadow: 0 0 10px #ffa502;
+        }
+
+        .flame.off {
+            display: none;
+        }
+
+        @keyframes flicker {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.2); }
+        }
+
+        .confetti-piece {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            top: -10px;
+            z-index: 999;
+            animation: confettiFall 3s linear infinite;
+        }
+
+        @keyframes confettiFall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Flowers -->
+    <div class="bg-flower" style="left: 10%; animation-delay: 0s;"></div>
+    <div class="bg-flower" style="left: 30%; animation-delay: 2s;"></div>
+    <div class="bg-flower" style="left: 60%; animation-delay: 4s;"></div>
+    <div class="bg-flower" style="left: 80%; animation-delay: 1s;"></div>
+
+    <div class="container">
+
+        <!-- Step 1: Start -->
+        <div class="step active" id="step-1">
+            <div style="font-size: 50px;"></div>
+            <h1>Surprise for Sister! </h1>
+            <p>Arey Wah! Today is super special. Ready for your birthday games & surprises?</p>
+            <button class="btn" onclick="nextStep(2)">Chalo Shuru Karein! </button>
+        </div>
+
+        <!-- Step 2: Balloon Pop -->
+        <div class="step" id="step-2">
+            <h2>Balloons Phodo (10) </h2>
+            <p>Popped: <span id="pop-count" style="font-weight:bold; color:#ff4757;">0</span>/10</p>
+            <div class="balloon-box" id="balloon-box"></div>
+        </div>
+
+        <!-- Step 3: Match Cards (12 Cards) -->
+        <div class="step" id="step-3">
+            <h2>Match the Pairs </h2>
+            <p>12 Cards me se saare 6 matching pairs dhoondho!</p>
+            <div class="cards-grid" id="cards-grid"></div>
+        </div>
+
+        <!-- Step 4: Food Treat Spin Wheel -->
+        <div class="step" id="step-4">
+            <h2>Treat Spin Wheel </h2>
+            <p>Wheel ghumao aur dekho kya treat milti hai!</p>
+            <div class="wheel-wrapper">
+                <div class="wheel-pointer"></div>
+                <div class="wheel" id="wheel"></div>
+            </div>
+            <button class="btn" id="spin-btn" onclick="spinWheel()">Spin Wheel </button>
+            <button class="btn" id="wheel-next-btn" style="display:none;" onclick="nextStep(5)">Aage Badho </button>
+        </div>
+
+        <!-- Step 5: Password Screen -->
+        <div class="step" id="step-5">
+            <h2>Secret Code Daalo </h2>
+            <p>Passcode type karke unlock karo:<br><small>(Hint: <b>Meripyaaribhen</b>)</small></p>
+            <input type="text" id="pin" class="pin-input" placeholder="Enter Password">
+            <br>
+            <button class="btn" onclick="checkPin()">Unlock </button>
+        </div>
+
+        <!-- Step 6: Envelope Letter -->
+        <div class="step" id="step-6">
+            <h2>Special Letter For You </h2>
+            <p>Envelope par click karke letter kholo!</p>
+            <div class="envelope-container" onclick="openLetter()">
+                <div class="envelope" id="envelope-icon"></div>
+            </div>
+            
+            <div class="letter-paper" id="letter-paper">
+                <b>Pyari Behan, </b><br><br>
+                Happy Birthday! Tum mere liye bohot special ho. Chahe hum kitni bhi ladai kar lein, par sach yehi hai ki tumhare bina ghar ekdam adhura lagta hai.<br><br>
+                Hamesha aise hi muskuraati raho, apne saare dreams poore karo aur life me bohot aage badho. Keep shining always! <br><br>
+                <b>- Tumhara Pyara Bhai </b>
+            </div>
+            <br>
+            <button class="btn" id="letter-next-btn" style="display:none;" onclick="nextStep(7)">Aage Badho </button>
+        </div>
+
+        <!-- Step 7: Professional Cake Cut -->
+        <div class="step" id="step-7">
+            <h2>Happy Birthday Cake! </h2>
+            <p id="cake-status">Below button daba kar cake kato! </p>
+            
+            <div class="cake-container">
+                <div class="candles">
+                    <div class="candle"><div class="flame" id="flame1"></div></div>
+                    <div class="candle"><div class="flame" id="flame2"></div></div>
+                    <div class="candle"><div class="flame" id="flame3"></div></div>
+                </div>
+                <div class="cake-top-tier">
+                    <div class="frosting-drip"></div>
+                </div>
+                <div class="cake-base">
+                    <div class="frosting-drip"></div>
+                </div>
+            </div>
+
+            <button class="btn" id="cut-cake-btn" onclick="cutCake()">Cut Cake </button>
+            <button class="btn" id="cake-next-btn" style="display:none;" onclick="nextStep(8)">Final Wishes </button>
+        </div>
+
+        <!-- Step 8: Final Wish Note -->
+        <div class="step" id="step-8">
+            <div style="font-size: 50px;"></div>
+            <h1>Happy Birthday Sis! </h1>
+            <p style="font-size: 15px; color: #2c3e50; line-height: 1.7; margin-top: 15px;">
+                Wish You A Very Very Happy Birthday Meri Pyari Behan!  Hamesha aise hi muskuraate rehna aur khush rehna.<br><br>
+                Take Screenshot and send it to me 
+            </p>
+        </div>
+
+    </div>
+
+    <script>
+        function nextStep(stepNumber) {
+            document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+            document.getElementById(`step-${stepNumber}`).classList.add('active');
+
+            if(stepNumber === 2) initFloatingBalloons();
+            if(stepNumber === 3) initCards();
+        }
+
+        // --- Game 1: Floating Balloons ---
+        let popped = 0;
+        let balloonInterval;
+        function initFloatingBalloons() {
+            const box = document.getElementById('balloon-box');
+            box.innerHTML = '';
+            popped = 0;
+            document.getElementById('pop-count').innerText = popped;
+
+            balloonInterval = setInterval(() => {
+                if(popped >= 10) {
+                    clearInterval(balloonInterval);
+                    return;
+                }
+                const b = document.createElement('div');
+                b.className = 'floating-balloon';
+                b.innerText = '';
+                b.style.left = Math.random() * 80 + 5 + '%';
+                b.onclick = () => {
+                    b.remove();
+                    popped++;
+                    document.getElementById('pop-count').innerText = popped;
+                    if(popped >= 10) {
+                        clearInterval(balloonInterval);
+                        setTimeout(() => nextStep(3), 400);
+                    }
+                };
+                box.appendChild(b);
+
+                setTimeout(() => { if(b.parentNode) b.remove(); }, 3500);
+            }, 600);
+        }
+
+        // --- Game 2: Extended 12 Cards Match ---
+        let flippedCards = [];
+        let matchedPairs = 0;
+        const icons = ['', '', '', '', '', '', '', '', '', '', '', ''];
+
+        function initCards() {
+            const grid = document.getElementById('cards-grid');
+            grid.innerHTML = '';
+            flippedCards = [];
+            matchedPairs = 0;
+
+            let shuffled = icons.sort(() => 0.5 - Math.random());
+            shuffled.forEach((icon) => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.dataset.icon = icon;
+                card.innerText = icon;
+                card.onclick = () => flipCard(card);
+                grid.appendChild(card);
+            });
+        }
+
+        function flipCard(card) {
+            if (flippedCards.length < 2 && !card.classList.contains('flipped')) {
+                card.classList.add('flipped');
+                flippedCards.push(card);
+
+                if (flippedCards.length === 2) {
+                    if (flippedCards[0].dataset.icon === flippedCards[1].dataset.icon) {
+                        matchedPairs++;
+                        flippedCards = [];
+                        if (matchedPairs === 6) {
+                            setTimeout(() => nextStep(4), 600);
+                        }
+                    } else {
+                        setTimeout(() => {
+                            flippedCards.forEach(c => c.classList.remove('flipped'));
+                            flippedCards = [];
+                        }, 700);
+                    }
+                }
+            }
+        }
+
+        // --- Game 3: Spin Wheel ---
+        let spun = false;
+        const treats = ["1 Ice Cream ", "1 Burger ", "1 Pizza ", "1 Chocolate ", "1 Waffle ", "1 Momos "];
+        
+        function spinWheel() {
+            if(spun) return;
+            spun = true;
+            const wheel = document.getElementById('wheel');
+            const randomDeg = 1440 + Math.floor(Math.random() * 360);
+            wheel.style.transform = `rotate(${randomDeg}deg)`;
+
+            setTimeout(() => {
+                const selected = treats[Math.floor(Math.random() * treats.length)];
+                alert(`  You Won: ${selected}!\n\nQR send kar do, paise main bhej dunga! `);
+                document.getElementById('spin-btn').style.display = 'none';
+                document.getElementById('wheel-next-btn').style.display = 'inline-block';
+            }, 3200);
+        }
+
+        // --- Passcode Check ---
+        function checkPin() {
+            const pin = document.getElementById('pin').value.trim();
+            if (pin === 'Meripyaaribhen') {
+                nextStep(6);
+            } else {
+                alert('Wrong Password! (Hint: Meripyaaribhen)');
+            }
+        }
+
+        // --- Open Letter ---
+        function openLetter() {
+            document.getElementById('envelope-icon').style.display = 'none';
+            document.getElementById('letter-paper').style.display = 'block';
+            document.getElementById('letter-next-btn').style.display = 'inline-block';
+        }
+
+        // --- Cake Cutting with Button ---
+        function cutCake() {
+            document.getElementById('flame1').classList.add('off');
+            document.getElementById('flame2').classList.add('off');
+            document.getElementById('flame3').classList.add('off');
+            document.getElementById('cake-status').innerText = ' Happy Birthday Sis! Cake Cut Ho Gaya! ';
+            document.getElementById('cut-cake-btn').style.display = 'none';
+            document.getElementById('cake-next-btn').style.display = 'inline-block';
+            startConfetti();
+        }
+
+        // --- Confetti Effect ---
+        function startConfetti() {
+            for(let i=0; i<60; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti-piece';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.backgroundColor = ['#ff4757', '#ffa502', '#2ed573', '#1e90ff', '#e84393'][Math.floor(Math.random()*5)];
+                confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                document.body.appendChild(confetti);
+            }
+        }
+    </script>
+</body>
+</html>
